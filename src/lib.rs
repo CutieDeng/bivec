@@ -1,3 +1,4 @@
 #[cfg(test)]
-mod tests {
-}
+mod tests; 
+
+pub mod core; 
