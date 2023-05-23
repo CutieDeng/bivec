@@ -21,4 +21,6 @@ mod clear;
 mod leak;
 mod spare;
 mod remove; 
-mod extend; 
+mod extend;
+mod raw; 
+mod insert; 
