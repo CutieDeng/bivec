@@ -25,4 +25,5 @@ mod extend;
 mod raw; 
 mod insert;
 mod slice;
-mod vecptr; 
+mod vecptr;
+mod boxed; 

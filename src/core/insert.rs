@@ -28,4 +28,12 @@ impl <F, S> BiVec<F, S> {
         } 
         self.len += 1; 
     }
+    pub fn push_within_capacity(&mut self, f: F, s: S) -> Result<(), (F, S)> {
+        if self.len() < self.capacity() {
+            self.push(f, s); 
+            Ok(())
+        } else {
+            Err((f, s))
+        } 
+    }
 }
