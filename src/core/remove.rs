@@ -37,7 +37,7 @@ impl <F, S> BiVec<F, S> {
         self.swap_remove(index, index)
     } 
     pub fn remove(&mut self, index: usize) -> (F, S) {
-        let len = self.len(); 
+        let len = self.len; 
         assert!(index < len, "remove index (is {}) should be < len (is {})", index, len); 
         let (f, s); 
         unsafe {
@@ -52,18 +52,30 @@ impl <F, S> BiVec<F, S> {
         }
         (f, s)
     }
+    pub fn retain_mut(&mut self, mut f: impl FnMut(&mut F, &mut S) -> bool) {
+        let len = self.len; 
+        let mut retains = Vec::with_capacity(len);
+        let (slice1, slice2) = self.bi_slices_mut(); 
+        for i in 0..len {
+            if f(&mut slice1[i], &mut slice2[i]) {
+                retains.push(i); 
+            }
+        } 
+        self.retain_in(retains); 
+    }
     pub fn retain(&mut self, mut f: impl FnMut(&F, &S) -> bool) {
         let len = self.len; 
         let mut retains = Vec::with_capacity(len);
+        let (slice1, slice2) = self.bi_slices(); 
         for i in 0..len {
-            unsafe {
-                let first_ptr = self.first.as_ptr().add(i); 
-                let second_ptr = self.second.as_ptr().add(i); 
-                if f(&*first_ptr, &*second_ptr) {
-                    retains.push(i); 
-                }
+            if f(&slice1[i], &slice2[i]) {
+                retains.push(i); 
             }
         } 
+        self.retain_in(retains); 
+    }
+    fn retain_in(&mut self, retains: Vec<usize>) {
+        let len = self.len; 
         let mut reit = retains.iter(); 
         let mut current = reit.next(); 
         for i in 0..len {
@@ -108,4 +120,17 @@ impl <F, S> BiVec<F, S> {
             } 
         } 
     }
+    pub fn truncate(&mut self, new_len: usize) {
+        if self.len <= new_len {
+            return 
+        }
+        let len = self.len; 
+        for i in new_len..len {
+            unsafe { self.first.as_ptr().add(i).drop_in_place(); } 
+        } 
+        for i in new_len..len {
+            unsafe { self.second.as_ptr().add(i).drop_in_place(); } 
+        } 
+        self.len = new_len; 
+    } 
 }

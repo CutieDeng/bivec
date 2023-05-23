@@ -23,4 +23,5 @@ mod spare;
 mod remove; 
 mod extend;
 mod raw; 
-mod insert; 
+mod insert;
+mod slice; 
