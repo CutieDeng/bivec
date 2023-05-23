@@ -55,7 +55,7 @@ impl <F, S> BiVec<F, S> {
     pub fn retain_mut(&mut self, mut f: impl FnMut(&mut F, &mut S) -> bool) {
         let len = self.len; 
         let mut retains = Vec::with_capacity(len);
-        let (slice1, slice2) = self.bi_slices_mut(); 
+        let (slice1, slice2) = self.as_slice_mut(); 
         for i in 0..len {
             if f(&mut slice1[i], &mut slice2[i]) {
                 retains.push(i); 
@@ -66,7 +66,7 @@ impl <F, S> BiVec<F, S> {
     pub fn retain(&mut self, mut f: impl FnMut(&F, &S) -> bool) {
         let len = self.len; 
         let mut retains = Vec::with_capacity(len);
-        let (slice1, slice2) = self.bi_slices(); 
+        let (slice1, slice2) = self.as_slice_mut(); 
         for i in 0..len {
             if f(&slice1[i], &slice2[i]) {
                 retains.push(i); 

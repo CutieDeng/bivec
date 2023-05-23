@@ -24,4 +24,5 @@ mod remove;
 mod extend;
 mod raw; 
 mod insert;
-mod slice; 
+mod slice;
+mod vecptr; 
